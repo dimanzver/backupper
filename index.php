@@ -7,9 +7,11 @@ $type = $argv[1];
 $from = $argv[2];
 $to = $argv[3];
 $maxChunkSize = $argv[4];
-$lastBackupTime = getLastBackupTime();
+$lastBackupTime = getLastBackupTime($from);
 
-DB::getConnection()->prepare('INSERT INTO backups (type) VALUES (:type)')->execute(compact('type'));
+DB::getConnection()->prepare('
+    INSERT INTO backups (type, path_from) VALUES (:type, :from)
+')->execute(compact('type', 'from'));
 $backupId = intval(DB::getConnection()->lastInsertId());
 
 $tmpName = __DIR__ . '/backup-files-' . $type . time();

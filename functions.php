@@ -19,7 +19,12 @@ function getFileId(string $path) {
     return intval(DB::getConnection()->lastInsertId());
 }
 
-function getLastBackupTime() {
-    $row = DB::getConnection()->query('SELECT MAX(date) AS max FROM `backups` WHERE finish_date IS NOT NULL')->fetch(PDO::FETCH_OBJ);
+function getLastBackupTime($pathFrom) {
+    $rowStmt = DB::getConnection()->prepare("
+        SELECT MAX(date) AS max FROM `backups`
+        WHERE finish_date IS NOT NULL AND path_from=:pathFrom
+    ");
+    $rowStmt->execute(compact('pathFrom'));
+    $row = $rowStmt->fetch(PDO::FETCH_OBJ);
     return $row ? $row->max : null;
 }

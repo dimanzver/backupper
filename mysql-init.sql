@@ -39,3 +39,4 @@ ALTER TABLE `backup_files` ADD `archive_id` BIGINT(20) UNSIGNED NOT NULL AFTER `
 ALTER TABLE `backup_files` ADD FOREIGN KEY (`archive_id`) REFERENCES `archives`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE `backups` ADD `finish_date` DATETIME NULL AFTER `date`;
 ALTER TABLE `backups` ADD INDEX(`finish_date`);
+ALTER TABLE `backups` ADD `path_from` VARCHAR(255) NOT NULL AFTER `finish_date`;
