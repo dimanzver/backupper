@@ -1,10 +1,24 @@
 <?php
 
+use Aws\S3\S3Client;
+
 function saveZip(ZipArchive $zipArchive, string $to) {
+    $toType = 'file';
+    if(strpos($to, 's3:') === 0) {
+        $toType = 's3';
+        $to = trim(preg_replace('/^s3:/', '', $to), '/');
+    }
+
     $zipFilename = $zipArchive->filename;
     echo "Writing archive " . basename($zipFilename) . "\n";
     $zipArchive->close();
-    copy($zipFilename, $to . '/' . basename($zipFilename));
+
+    if ($toType === 's3') {
+        uploadToS3($zipFilename, $to . '/' . basename($zipFilename));
+    } else {
+        copy($zipFilename, $to . '/' . basename($zipFilename));
+    }
+
     unlink($zipFilename);
 }
 
@@ -27,4 +41,22 @@ function getLastBackupTime($pathFrom) {
     $rowStmt->execute(compact('pathFrom'));
     $row = $rowStmt->fetch(PDO::FETCH_OBJ);
     return $row ? $row->max : null;
+}
+
+function uploadToS3(string $filepath, $s3path) {
+    $client = new S3Client([
+        'credentials' => [
+            'key'      => S3_ID,
+            'secret'   => S3_SECRET,
+        ],
+        'region'   => S3_REGION,
+        'endpoint' => S3_ENDPOINT,
+        'version'  => 'latest',
+    ]);
+    $client->putObject([
+        'Bucket' => S3_BUCKET,
+        'Key' => $s3path,
+        'SourceFile' => $filepath,
+        'ContentType' => mime_content_type($filepath),
+    ]);
 }
