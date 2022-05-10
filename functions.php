@@ -20,6 +20,6 @@ function getFileId(string $path) {
 }
 
 function getLastBackupTime() {
-    $row = DB::getConnection()->query('SELECT MAX(date) AS max FROM `backups`')->fetch(PDO::FETCH_OBJ);
+    $row = DB::getConnection()->query('SELECT MAX(date) AS max FROM `backups` WHERE finish_date IS NOT NULL')->fetch(PDO::FETCH_OBJ);
     return $row ? $row->max : null;
 }
