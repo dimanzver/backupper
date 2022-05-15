@@ -25,7 +25,7 @@ $fs = fopen($tmpName, 'r');
 $zipArchive = null;
 while (($filepath = fgets($fs)) !== false) {
     if(!$zipArchive) {
-        $archiveName = $type . '-' . date('Y-m-d H:i:s') . uniqid() . '.zip';
+        $archiveName = $type . '-' . date('Y-m-d-H-i-s') . uniqid() . '.zip';
         $archiveTmpPath = __DIR__ . '/' . $archiveName;
         $zipArchive = new ZipArchive();
         $zipArchive->open($archiveTmpPath, ZipArchive::CREATE);

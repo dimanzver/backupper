@@ -1,5 +1,9 @@
 {
     "require": {
-        "aws/aws-sdk-php": "^3.222"
+        "aws/aws-sdk-php": "^3.222",
+      "ext-curl": "*",
+      "ext-pdo": "*",
+      "ext-zip": "*",
+      "ext-fileinfo": "*"
     }
 }

@@ -10,3 +10,8 @@ define('S3_SECRET', 'secrep');
 define('S3_BUCKET', 'backups');
 define('S3_ENDPOINT', 'https://storage.yandexcloud.net');
 define('S3_REGION', 'us-east-1');
+
+
+define('YANDEX_DISK_ID', '');
+define('YANDEX_DISK_PASSWORD', '');
+define('YANDEX_DISK_TOKEN_FILE', 'yandex-disk-token.json');

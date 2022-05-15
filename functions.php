@@ -9,12 +9,19 @@ function saveZip(ZipArchive $zipArchive, string $to) {
         $to = trim(preg_replace('/^s3:/', '', $to), '/');
     }
 
+    if(strpos($to, 'yandex-disk:') === 0) {
+        $toType = 'yandex-disk';
+        $to = trim(preg_replace('/^yandex-disk:/', '', $to), '/');
+    }
+
     $zipFilename = $zipArchive->filename;
     echo "Writing archive " . basename($zipFilename) . "\n";
     $zipArchive->close();
 
     if ($toType === 's3') {
         uploadToS3($zipFilename, $to . '/' . basename($zipFilename));
+    } elseif ($toType === 'yandex-disk') {
+        (new YandexDisk())->uploadFile($zipFilename, $to . '/' . basename($zipFilename));
     } else {
         copy($zipFilename, $to . '/' . basename($zipFilename));
     }
