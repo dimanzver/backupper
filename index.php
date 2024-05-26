@@ -55,6 +55,7 @@ while (($filepath = fgets($fs)) !== false) {
         echo "Switching archive " . basename($zipArchive->filename) . "\n";
         saveZip($zipArchive, $to);
         $zipArchive = null;
+        sleep(2);
     }
     usleep(10000);
 }
