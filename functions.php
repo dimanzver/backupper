@@ -14,6 +14,11 @@ function saveZip(ZipArchive $zipArchive, string $to) {
         $to = trim(preg_replace('/^yandex-disk:/', '', $to), '/');
     }
 
+    if(strpos($to, 'webdav:') === 0) {
+        $toType = 'webdav';
+        $to = trim(preg_replace('/^webdav:/', '', $to), '/');
+    }
+
     $zipFilename = $zipArchive->filename;
     echo "Writing archive " . basename($zipFilename) . "\n";
     $zipArchive->close();
@@ -22,7 +27,11 @@ function saveZip(ZipArchive $zipArchive, string $to) {
         uploadToS3($zipFilename, $to . '/' . basename($zipFilename));
     } elseif ($toType === 'yandex-disk') {
         (new YandexDisk())->uploadFile($zipFilename, $to . '/' . basename($zipFilename));
-    } else {
+    } elseif ($toType === 'webdav') {
+        $webDav = new WebDav();
+        $webDav->connect(WEBDAV_URL, WEBDAV_LOGIN, WEBDAV_PASSWORD);
+        $webDav->uploadFile($zipFilename, $to . '/' . basename($zipFilename));
+    }  else {
         copy($zipFilename, $to . '/' . basename($zipFilename));
     }
 
